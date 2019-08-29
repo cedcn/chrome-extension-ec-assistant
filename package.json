@@ -1,0 +1,63 @@
+{
+  "name": "chrome-extension-ec-assistant",
+  "version": "0.0.0",
+  "description": "ec-assistant",
+  "scripts": {
+    "dev": "babel-node scripts/dev",
+    "build": "babel-node scripts/build",
+    "compress": "babel-node scripts/compress",
+    "compress-keygen": "crx keygen",
+    "clean": "rimraf build/ dev/ *.zip *.crx",
+    "lint": "eslint app chrome scripts webpack/*.js"
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "react",
+    "redux"
+  ],
+  "author": "cedcn",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "autoprefixer": "^9.6.1",
+    "babel-eslint": "^10.0.2",
+    "babel-loader": "^8.0.6",
+    "crx": "^5.0.1",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.2.2",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.0.1",
+    "express": "^4.17.1",
+    "minimist": "^1.2.0",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.18.2",
+    "pug-cli": "^1.0.0-alpha6",
+    "rimraf": "^3.0.0",
+    "shelljs": "^0.8.3",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-middleware": "^3.7.0",
+    "webpack-hot-middleware": "^2.25.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
+  }
+}

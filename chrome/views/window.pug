@@ -1,0 +1,9 @@
+doctype html
+
+html
+  head
+    meta(charset='UTF-8')
+    title EC Assistant
+  body
+    #root
+    script(src=env == 'prod' ? '/js/todoapp.bundle.js' : 'https://localhost:3333/js/todoapp.bundle.js')
