@@ -8,7 +8,7 @@ function closeIfExist() {
   }
 }
 
-function popWindow(type) {
+function popWindow(type, params) {
   closeIfExist()
   const options = {
     type: 'popup',
@@ -18,27 +18,22 @@ function popWindow(type) {
     height: 475,
   }
   if (type === 'open') {
-    options.url = 'window.html'
+    options.url = `window.html?text=${params.selectionText}`
     chrome.windows.create(options, (win) => {
       windowId = win.id
     })
   }
 }
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log(sender.tab ? `来自内容脚本：${sender.tab.url}` : '来自扩展程序')
-  if (request.greeting === '您好') sendResponse({ farewell: '再见' })
-})
-
 chrome.contextMenus.create({
   id: CONTEXT_MENU_ID,
   title: '挖词',
   contexts: ['selection'],
-  documentUrlPatterns: ['https://github.com/*'],
+  documentUrlPatterns: ['https://*.taobao.com/*', 'https://*.jd.com/*', 'https://*.tmall.com/*'],
 })
 
-chrome.contextMenus.onClicked.addListener((event) => {
-  if (event.menuItemId === CONTEXT_MENU_ID) {
-    popWindow('open')
+chrome.contextMenus.onClicked.addListener((params) => {
+  if (params.menuItemId === CONTEXT_MENU_ID) {
+    popWindow('open', params)
   }
 })

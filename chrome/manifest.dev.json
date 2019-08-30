@@ -17,5 +17,5 @@
     "page": "background.html"
   },
   "permissions": ["contextMenus", "management", "tabs", "storage", "https://github.com/*"],
-  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3333 https://localhost:3333 'unsafe-eval'; connect-src http://localhost:3333 https://localhost:3333; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
+  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3333 https://localhost:3333 https://suggest.taobao.com 'unsafe-eval'; connect-src http://localhost:3333 https://localhost:3333 https://1836000086198179.cn-shanghai.fc.aliyuncs.com https://suggest.taobao.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

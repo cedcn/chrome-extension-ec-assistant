@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
+const { getLocalIdent } = require('css-loader/dist/utils')
 
 const host = 'localhost'
 const port = 3333
@@ -59,7 +60,14 @@ const baseDevConfig = () => ({
             loader: 'css-loader',
             options: {
               modules: {
-                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                localIdentName: '[name]__[local]--[hash:base64:5]',
+                getLocalIdent: (context, localIdentName, localName, options) => {
+                  if (context.resourcePath.includes('react-table.css')) {
+                    return localName
+                  }
+
+                  return getLocalIdent(context, localIdentName, localName, options)
+                },
               },
             },
           },
