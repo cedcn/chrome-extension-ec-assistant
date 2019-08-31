@@ -27,9 +27,9 @@ function popWindow(type, params) {
 
 chrome.contextMenus.create({
   id: CONTEXT_MENU_ID,
-  title: '挖词',
+  title: '挖掘关键词',
   contexts: ['selection'],
-  documentUrlPatterns: ['https://*.taobao.com/*', 'https://*.jd.com/*', 'https://*.tmall.com/*'],
+  documentUrlPatterns: ['http://*/*', 'https://*/*'],
 })
 
 chrome.contextMenus.onClicked.addListener((params) => {

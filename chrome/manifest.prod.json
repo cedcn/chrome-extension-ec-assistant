@@ -1,8 +1,8 @@
 {
-  "version": "0.0.0",
-  "name": "Chrome Extension EC Assistant",
+  "version": "1.0.0",
+  "name": "电商助手",
   "manifest_version": 2,
-  "description": "Chrome Extension EC Assistant",
+  "description": "精准的商品标题优化，提供高流量的类目词、属性词进行匹配",
   "browser_action": {
     "default_title": "Chrome Extension EC Assistant",
     "default_popup": "popup.html"
@@ -16,6 +16,6 @@
   "background": {
     "page": "background.html"
   },
-  "permissions": ["contextMenus", "tabs", "storage", "https://github.com/*"],
-  "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
+  "permissions": ["contextMenus", "management", "tabs", "storage", "https://github.com/*"],
+  "content_security_policy": "default-src 'self'; script-src 'self' https://suggest.taobao.com 'unsafe-eval'; connect-src https://1836000086198179.cn-shanghai.fc.aliyuncs.com https://suggest.taobao.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

@@ -1,13 +1,13 @@
 const path = require('path')
 const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
-
-const customPath = path.join(__dirname, './customPublicPath')
+const { getLocalIdent } = require('css-loader/dist/utils')
 
 module.exports = {
   entry: {
-    background: [customPath, path.join(__dirname, '../chrome/extension/background')],
-    inject: [customPath, path.join(__dirname, '../chrome/extension/inject')],
+    background: path.join(__dirname, '../chrome/extension/background'),
+    inject: path.join(__dirname, '../chrome/extension/inject'),
+    todoapp: path.join(__dirname, '../chrome/extension/todoapp'),
   },
   mode: 'production',
   output: {
@@ -33,7 +33,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
@@ -46,6 +46,13 @@ module.exports = {
             options: {
               modules: {
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                getLocalIdent: (context, localIdentName, localName, options) => {
+                  if (context.resourcePath.includes('react-table.css')) {
+                    return localName
+                  }
+
+                  return getLocalIdent(context, localIdentName, localName, options)
+                },
               },
             },
           },
