@@ -5,14 +5,15 @@ const { getLocalIdent } = require('css-loader/dist/utils')
 
 const host = 'localhost'
 const port = 3333
-const customPath = path.join(__dirname, './customPublicPath')
 
 const baseDevConfig = () => ({
   devtool: 'eval-cheap-module-source-map',
   mode: 'development',
   entry: {
-    background: [customPath, path.join(__dirname, '../chrome/extension/background')],
-    todoapp: path.join(__dirname, '../chrome/extension/todoapp'),
+    background: path.join(__dirname, '../chrome/extension/background'),
+    inject: path.join(__dirname, '../chrome/extension/inject'),
+    app: path.join(__dirname, '../chrome/extension/app'),
+    popup: path.join(__dirname, '../chrome/extension/popup'),
   },
   devMiddleware: {
     publicPath: `http://${host}:${port}/js`,
@@ -83,15 +84,7 @@ const baseDevConfig = () => ({
   },
 })
 
-const injectPageConfig = baseDevConfig()
-injectPageConfig.entry = [customPath, path.join(__dirname, '../chrome/extension/inject')]
-delete injectPageConfig.hotMiddleware
-delete injectPageConfig.module.rules[0].options
-injectPageConfig.plugins.shift() // remove HotModuleReplacementPlugin
-injectPageConfig.output = {
-  path: path.join(__dirname, '../dev/js'),
-  filename: 'inject.bundle.js',
-}
+
 const appConfig = baseDevConfig()
 
-module.exports = [injectPageConfig, appConfig]
+module.exports = appConfig

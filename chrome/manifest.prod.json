@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "description": "精准的商品标题优化，提供高流量的类目词、属性词进行匹配",
   "browser_action": {
-    "default_title": "Chrome Extension EC Assistant",
+    "default_title": "电商助手",
     "default_popup": "popup.html"
   },
   "icons": {
@@ -12,6 +12,7 @@
     "48": "img/icon-48.png",
     "128": "img/icon-128.png"
   },
+  "homepage_url": "https://github.com/Cedcn",
   "web_accessible_resources": ["inject.html"],
   "background": {
     "page": "background.html"

@@ -1,18 +1,9 @@
-function isInjected(tabId) {
-  return chrome.tabs.executeScriptAsync(tabId, {
-    code: `var injected = window.reactExampleInjected;
-      window.reactExampleInjected = true;
-      injected;`,
-    runAt: 'document_start',
-  })
-}
-
 function loadScript(name, tabId, cb) {
   if (process.env.NODE_ENV === 'production') {
     chrome.tabs.executeScript(tabId, { file: `/js/${name}.bundle.js`, runAt: 'document_end' }, cb)
   } else {
     // dev: async fetch bundle
-    fetch(`https://localhost:3000/js/${name}.bundle.js`)
+    fetch(`https://localhost:3333/js/${name}.bundle.js`)
       .then((res) => res.text())
       .then((fetchRes) => {
         // Load redux-devtools-extension inject bundle,
@@ -32,11 +23,7 @@ function loadScript(name, tabId, cb) {
 
 const arrowURLs = ['^https://github\\.com']
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status !== 'loading' || !tab.url.match(arrowURLs.join('|'))) return
-
-  const result = await isInjected(tabId)
-  if (chrome.runtime.lastError || result[0]) return
-
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status !== 'loading' || chrome.runtime.lastError || !tab.url.match(arrowURLs.join('|'))) return
   loadScript('inject', tabId, () => console.log('load inject bundle success!'))
 })
