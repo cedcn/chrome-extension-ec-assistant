@@ -6,7 +6,6 @@ const { getLocalIdent } = require('css-loader/dist/utils')
 module.exports = {
   entry: {
     background: path.join(__dirname, '../chrome/extension/background'),
-    inject: path.join(__dirname, '../chrome/extension/inject'),
     app: path.join(__dirname, '../chrome/extension/app'),
     popup: path.join(__dirname, '../chrome/extension/popup'),
   },

@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0",
-  "name": "电商助手",
+  "version": "1.0.1",
+  "name": "淘词助手",
   "manifest_version": 2,
   "description": "精准的商品标题优化，提供高流量的类目词、属性词进行匹配",
   "browser_action": {
-    "default_title": "电商助手",
+    "default_title": "淘词助手",
     "default_popup": "popup.html"
   },
   "icons": {
@@ -12,11 +12,20 @@
     "48": "img/icon-48.png",
     "128": "img/icon-128.png"
   },
+  "author": "shores",
   "homepage_url": "https://github.com/Cedcn",
-  "web_accessible_resources": ["inject.html"],
   "background": {
     "page": "background.html"
   },
-  "permissions": ["contextMenus", "management", "tabs", "storage", "https://github.com/*"],
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "cookies",
+    "webRequest",
+    "webRequestBlocking",
+    "http://*/*",
+    "https://*/*",
+    "storage"
+  ],
   "content_security_policy": "default-src 'self'; script-src 'self' https://suggest.taobao.com 'unsafe-eval'; connect-src https://1836000086198179.cn-shanghai.fc.aliyuncs.com https://suggest.taobao.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

@@ -11,7 +11,6 @@ const baseDevConfig = () => ({
   mode: 'development',
   entry: {
     background: path.join(__dirname, '../chrome/extension/background'),
-    inject: path.join(__dirname, '../chrome/extension/inject'),
     app: path.join(__dirname, '../chrome/extension/app'),
     popup: path.join(__dirname, '../chrome/extension/popup'),
   },
@@ -63,7 +62,7 @@ const baseDevConfig = () => ({
               modules: {
                 localIdentName: '[name]__[local]--[hash:base64:5]',
                 getLocalIdent: (context, localIdentName, localName, options) => {
-                  if (context.resourcePath.includes('react-table.css')) {
+                  if (context.resourcePath.includes('react-table') || context.resourcePath.includes('antd')) {
                     return localName
                   }
 
@@ -83,7 +82,6 @@ const baseDevConfig = () => ({
     ],
   },
 })
-
 
 const appConfig = baseDevConfig()
 

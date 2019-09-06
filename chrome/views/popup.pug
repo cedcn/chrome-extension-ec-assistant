@@ -3,12 +3,10 @@ doctype html
 html
   head
     meta(charset='UTF-8')
-    title Redux TodoMVC Example (Popup)
+    title 淘词助手
     style.
       body { width: 200px; }
 
   body
     #root
-    if env !== 'prod'
-      script(src='chrome-extension://lmhkpmbekcpmknklioeibfkpmmfibljd/js/redux-devtools-extension.js')
     script(src=env == 'prod' ? '/js/popup.bundle.js' : 'https://localhost:3333/js/popup.bundle.js')

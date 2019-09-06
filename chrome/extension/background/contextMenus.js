@@ -1,5 +1,5 @@
 let windowId = 0
-const CONTEXT_MENU_ID = 'example_context_menu'
+const CONTEXT_MENU_ID = 'context_menu'
 
 function closeIfExist() {
   if (windowId > 0) {

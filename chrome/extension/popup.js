@@ -1,30 +1,11 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 
-class Menus extends Component {
-  onCollectClick = () => {
-    chrome.tabs.query({ active: true, currentWindow: true, status: 'complete' }, (result) => {
-      chrome.tabs.sendMessage(result[0].id, { action: 'show-collect' }, {}, (response) => {
-        console.log(response)
-        window.close()
-      })
-    })
-  }
-
-  render() {
-    return (
-      <ul>
-        <li>
-          <a onClick={() => this.onCollectClick()}>显示收藏</a>
-        </li>
-      </ul>
-    )
-  }
-}
+import Popup from '../../app/popup'
 
 ReactDOM.render(
   <div>
-    <Menus />
+    <Popup />
   </div>,
   document.querySelector('#root')
 )

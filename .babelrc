@@ -9,6 +9,7 @@
           "chrome": "67",
           "safari": "11.1"
         },
+        "corejs": "2",
         "useBuiltIns": "usage"
       }
     ],
@@ -17,6 +18,14 @@
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
-    "@babel/proposal-object-rest-spread"
+    "@babel/proposal-object-rest-spread",
+    [
+      "import",
+      {
+        "libraryName": "antd",
+        "libraryDirectory": "es",
+        "style": "css"
+      }
+    ]
   ]
 }
