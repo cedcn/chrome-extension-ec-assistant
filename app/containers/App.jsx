@@ -1,20 +1,45 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import { map, flatten, forEach, uniq } from 'lodash'
-import jsonpAdapter from 'axios-jsonp'
-import ReactTable from 'react-table'
-import style from './app.module.css'
-import './global.css'
+import { message, Spin, Table } from 'antd'
+import queue from 'queue'
+import { map, flatten, forEach, uniq, chunk, reduce, get } from 'lodash'
+import styles from './app.module.css'
+import { participle, digwordsFromDropDown, downloadXlsx } from '../utils'
 
 const columns = [
   {
-    Header: 'Keyword',
-    accessor: 'keyword',
+    title: '关键词',
+    dataIndex: 'keyword',
   },
   {
-    Header: 'other',
-    accessor: 'other',
+    title: '展现量',
+    dataIndex: 'impression', // 展现指数
+  },
+  {
+    title: '点击指数',
+    dataIndex: 'click', // 展现指数
+  },
+  {
+    title: '点击率',
+    dataIndex: 'ctr', // 点击率
+  },
+  {
+    title: '转化率',
+    dataIndex: 'cvr', // 转化率
+  },
+  {
+    title: '市场均价',
+    dataIndex: 'avgPrice', // 市场均价
+  },
+  {
+    title: '竞争度',
+    dataIndex: 'competition', // 竞争度
+  },
+  {
+    title: '订单转化成本',
+    dataIndex: 'cost', // 成本
   },
 ]
 
@@ -23,7 +48,8 @@ class App extends Component {
     super(props)
 
     this.state = {
-      searchResults: [],
+      wordGroup: [],
+      isLoading: false,
     }
   }
 
@@ -62,12 +88,15 @@ class App extends Component {
       ['blocking', 'requestHeaders', 'extraHeaders']
     )
 
-    this.onInvoke()
+    // this.onInvoke()
   }
 
   onInvoke() {
+    this.setState({ isLoading: true, wordGroup: [] })
     chrome.cookies.getAll({ url: 'https://subway.simba.taobao.com/' }, async (cookie) => {
-      const words = await this.partSentance()
+      let wordGroup = []
+      wordGroup = await this.participle()
+      wordGroup = await digwordsFromDropDown(wordGroup)
 
       const axiosInstance = axios.create({
         baseURL: 'https://subway.simba.taobao.com',
@@ -77,19 +106,29 @@ class App extends Component {
       })
 
       const token = await this.getToken({ axiosInstance })
-      const recommentWords = await Promise.all(
-        map(words, async (word) => {
-          //
-          const cateList = await this.getCategories({ axiosInstance, token, word })
-          if (!cateList || cateList.length <= 0) {
-            return []
-          }
-          const response = await this.digwordsFromSubway({ axiosInstance, token, word, cateId: cateList[0].cateId })
-          return response
-        })
-      )
+      const wordGroupChunks = chunk(wordGroup, 10)
 
-      this.setState({ searchResults: uniq([...words, ...flatten(recommentWords)]) })
+      const q = queue({ results: [], concurrency: 10 })
+      forEach(wordGroupChunks, (wordChunk) => {
+        q.push(() => {
+          const wordChunkRequests = map(wordChunk, async (word) => {
+            const cateList = await this.getCategories({ axiosInstance, token, keyword: word.keyword })
+            if (!cateList || cateList.length <= 0) {
+              return word
+            }
+
+            return { ...word, categories: cateList }
+          })
+
+          return Promise.all(wordChunkRequests)
+        })
+      })
+      q.start(() => {
+        this.setState({ isLoading: false })
+      })
+      q.on('success', (result) => {
+        this.setState((prevState) => ({ wordGroup: [...prevState.wordGroup, ...result] }))
+      })
     })
   }
 
@@ -102,58 +141,71 @@ class App extends Component {
     return response.data.result.token
   }
 
-  getCategories = async ({ axiosInstance, token, word }) => {
+  getCategories = async ({ axiosInstance, token, keyword }) => {
     const response = await axiosInstance({
-      url: `/openapi/param2/1/gateway.subway/traffic/word/category$?word=${word}&token=${token}`,
+      url: `/openapi/param2/1/gateway.subway/traffic/word/category$?word=${keyword}&token=${token}`,
       method: 'POST',
     })
 
-    return response.data.result.cateList
-  }
+    const cateList = response.data.result.cateList
 
-  partSentance = async () => {
-    const { keyword } = this.props
-    const response = await axios.get(
-      `https://1836000086198179.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/ec-assistant/npl/?text=${keyword}`
-    )
-
-    const regroup = map(response.data, (item) => {
-      const arr = []
-      forEach(response.data, (child) => {
-        if (item !== child) {
-          arr.push(item + child)
-        }
-      })
-      return arr
-    })
-    const newWrods = [...response.data, ...flatten(regroup)]
-    const dropDownResults = await this.digwordsFromDropDown(newWrods)
-    return flatten(dropDownResults)
-  }
-
-  digwordsFromDropDown = async (words) => {
     const results = await Promise.all(
-      map(words, async (item) => {
-        let json = []
-        try {
-          const taobaoRes = await axios({
-            url: `https://suggest.taobao.com/sug?code=utf-8&q=${item}&_ksTS=1553703225083_374&k=1&area=c2c&bucketid=2`,
-            adapter: jsonpAdapter,
-          })
-
-          if (taobaoRes.status === 200) {
-            json = taobaoRes.data.result
-            json = [item, ...map(json, (r) => r[0])]
-          }
-        } catch (error) {
-          console.log(error)
+      map(cateList, async (cateItem) => {
+        const report = await this.getReport({
+          axiosInstance,
+          token,
+          keyword,
+          cateId: cateItem.cateId,
+          startDate: '2019-08-07',
+          endDate: '2019-09-05',
+        })
+        if (report && report.length > 0) {
+          return { category: cateItem, report: this.calculateReportArg(report) }
         }
 
-        return json
+        return { category: cateItem }
       })
     )
 
     return results
+  }
+
+  calculateReportArg = (report) => {
+    const value = reduce(
+      report,
+      (acc, current) => {
+        acc.avgPrice += Number(current.avgPrice)
+        acc.clickIndex += Number(current.clickIndex)
+        acc.competition += Number(current.competition)
+        acc.ctr += Number(current.ctr)
+        acc.cvr += Number(current.cvr)
+        acc.impressionIndex += Number(current.impressionIndex)
+        return acc
+      },
+      { avgPrice: 0, clickIndex: 0, competition: 0, ctr: 0, cvr: 0, impressionIndex: 0 }
+    )
+    const count = report.length
+    return {
+      avgPrice: value.avgPrice / count,
+      clickIndex: value.clickIndex / count,
+      competition: value.competition / count,
+      ctr: value.ctr / count,
+      cvr: value.cvr / count,
+      impressionIndex: value.impressionIndex / count,
+    }
+  }
+
+  getReport = async ({ axiosInstance, token, keyword, cateId, startDate, endDate }) => {
+    const response = await axiosInstance({
+      url: `/openapi/param2/1/gateway.subway/traffic/report/word/category$?word=${keyword}&token=${token}&cateId=${cateId}&sla=json&startDate=${startDate}&endDate=${endDate}`,
+      method: 'POST',
+    })
+    return response.data.result
+  }
+
+  participle = async () => {
+    const words = await participle(this.props.keyword)
+    return [{ keyword: this.props.keyword }, ...words]
   }
 
   digwordsFromSubway = async ({ axiosInstance, token, word, cateId }) => {
@@ -166,9 +218,9 @@ class App extends Component {
   }
 
   render() {
-    const dataSource = map(this.state.searchResults, (item) => ({ keyword: item }))
+    const { wordGroup } = this.state
     return (
-      <div className={style.normal}>
+      <div className={styles.normal}>
         <a
           onClick={() => {
             this.onInvoke()
@@ -176,17 +228,15 @@ class App extends Component {
         >
           sdsd
         </a>
-        <ReactTable
-          data={dataSource}
-          columns={columns}
-          pageSize={dataSource.length}
-          resizable={false}
-          sortable={false}
-          showPageJump={false}
-          showPagination={false}
-          showPaginationBottom={false}
-          showPageSizeOptions={false}
-        />
+        <a
+          onClick={() => {
+            downloadXlsx()
+          }}
+        >
+          导出Execl
+        </a>
+        <Spin spinning={this.state.isLoading} />
+        <Table pagination={false} columns={columns} dataSource={wordGroup} />
       </div>
     )
   }

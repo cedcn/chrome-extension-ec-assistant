@@ -62,7 +62,11 @@ const baseDevConfig = () => ({
               modules: {
                 localIdentName: '[name]__[local]--[hash:base64:5]',
                 getLocalIdent: (context, localIdentName, localName, options) => {
-                  if (context.resourcePath.includes('react-table') || context.resourcePath.includes('antd')) {
+                  if (
+                    context.resourcePath.includes('react-table') ||
+                    context.resourcePath.includes('antd') ||
+                    context.resourcePath.includes('react-virtualized')
+                  ) {
                     return localName
                   }
 

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import queryString from 'query-string'
-import App from './App'
+import App from './containers/App'
+import './global.css'
 
 const parsed = queryString.parse(document.location.search)
 const keyword = parsed.text || ''
