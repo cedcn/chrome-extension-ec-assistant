@@ -23,7 +23,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.onInvoke()
+    try {
+      this.onInvoke()
+    } catch (err) {
+      // do nothing
+    }
   }
 
   componentWillUnmount() {

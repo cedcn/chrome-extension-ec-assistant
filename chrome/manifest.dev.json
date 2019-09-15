@@ -2,7 +2,7 @@
   "version": "0.0.0",
   "name": "淘词助手",
   "manifest_version": 2,
-  "description": "精准的商品标题优化，提供高流量的类目词、属性词进行匹配",
+  "description": "淘宝关键词挖掘下拉词、相关词，及直通车展现、点击率、平均价等相关数据",
   "browser_action": {
     "default_title": "淘词助手",
     "default_popup": "popup.html"

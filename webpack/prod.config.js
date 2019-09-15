@@ -16,7 +16,7 @@ module.exports = {
     chunkFilename: '[id].chunk.js',
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
@@ -47,7 +47,10 @@ module.exports = {
               modules: {
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
                 getLocalIdent: (context, localIdentName, localName, options) => {
-                  if (context.resourcePath.includes('react-table.css')) {
+                  if (
+                    context.resourcePath.includes('react-progress-bar-plus') ||
+                    context.resourcePath.includes('antd')
+                  ) {
                     return localName
                   }
 

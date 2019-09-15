@@ -78,7 +78,7 @@ export const getCategories = async ({ axiosInstance, token, keyword }) => {
     method: 'POST',
   })
 
-  return response.data.result.cateList
+  return get(response, 'data.result.cateList') 
 }
 
 export const s2ab = (s) => {
