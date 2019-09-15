@@ -6,7 +6,7 @@ import { Table } from 'antd'
 import moment from 'moment'
 import numeral from 'numeral'
 import queue from 'queue'
-import { map, forEach, chunk, round, reduce, isEmpty, isUndefined } from 'lodash'
+import { map, forEach, chunk, get, round, reduce, isEmpty, isUndefined } from 'lodash'
 import styles from './index.module.css'
 import { participle, digwordsFromDropDown } from '../../utils'
 
@@ -45,6 +45,12 @@ class App extends Component {
       })
 
       const token = await this.getToken({ axiosInstance })
+      if (isUndefined(token)) {
+        this.setState({ wordGroup, isLoading: false }, () => {
+          this.props.setIsNoLogin(true)
+        })
+        return
+      }
       const wordGroupChunks = chunk(wordGroup, 10)
 
       const endDate = moment().format('YYYY-MM-DD')
@@ -82,7 +88,7 @@ class App extends Component {
       method: 'POST',
     })
 
-    return response.data.result.token
+    return get(response, 'data.result.token')
   }
 
   getCategories = async ({ axiosInstance, token, keyword, startDate, endDate }) => {
@@ -91,7 +97,7 @@ class App extends Component {
       method: 'POST',
     })
 
-    const cateList = response.data.result.cateList
+    const cateList = get(response, 'data.result.cateList')
     let result = []
     if (!isEmpty(cateList)) {
       const report = await this.getReport({
@@ -160,7 +166,7 @@ class App extends Component {
   }
 
   render() {
-    const { addPane, keyword } = this.props
+    const { addPane } = this.props
     const columns = [
       {
         title: '关键词',
@@ -226,7 +232,6 @@ class App extends Component {
 
     const { wordGroup, isLoading } = this.state
     const dataSource = map(wordGroup, (word, index) => ({ key: index, ...word }))
-
     return (
       <Table pagination={false} loading={isLoading} columns={columns} dataSource={dataSource} scroll={{ x: true }} />
     )
@@ -237,6 +242,7 @@ App.propTypes = {
   keyword: PropTypes.string.isRequired,
   addPane: PropTypes.func.isRequired,
   setPercent: PropTypes.func.isRequired,
+  setIsNoLogin: PropTypes.func.isRequired,
 }
 
 export default App

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import queryString from 'query-string'
 import App from './containers/App'
 import './global.css'
@@ -11,8 +10,4 @@ export default class Root extends Component {
   render() {
     return <App keyword={keyword} />
   }
-}
-
-Root.propTypes = {
-  store: PropTypes.object.isRequired,
 }

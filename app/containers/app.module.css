@@ -2,6 +2,14 @@
   padding: 10px;
 }
 
+.warning.warning {
+  margin-bottom: 7px;
+}
+
+.export_button {
+  margin-left: 10px;
+}
+
 :global(.ant-tabs .ant-tabs-bar) {
   margin-bottom: 3px;
 }

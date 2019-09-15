@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Spin, Button, Tabs } from 'antd'
+import { Button, Tabs, Alert, Icon, Tooltip } from 'antd'
 import { map } from 'lodash'
 import ProgressBar from 'react-progress-bar-plus'
 import styles from './app.module.css'
@@ -18,6 +18,7 @@ class App extends Component {
     const panes = [{ keyword, key: '1' }]
     this.newTabIndex = 0
     this.state = {
+      isNoLogin: false,
       percent: -1,
       activeKey: panes[0].key,
       panes,
@@ -30,6 +31,10 @@ class App extends Component {
 
   onEdit = (targetKey, action) => {
     this[action](targetKey)
+  }
+
+  setIsNoLogin = (bool) => {
+    this.setState({ isNoLogin: bool })
   }
 
   add = () => {
@@ -107,21 +112,43 @@ class App extends Component {
   }
 
   render() {
-    const { panes } = this.state
+    const { panes, isNoLogin } = this.state
     const operations = (
-      <Button
-        onClick={() => {
-          downloadXlsx()
-        }}
-        size="small"
-      >
-        导出Execl
-      </Button>
+      <>
+        <Tooltip placement="bottom" title="所有数据为近7天平均值">
+          <Icon type="question-circle" />
+        </Tooltip>
+        <Button
+          onClick={() => {
+            downloadXlsx()
+          }}
+          className={styles.export_button}
+          size="small"
+        >
+          导出Execl
+        </Button>
+      </>
     )
 
     return (
       <div className={styles.normal}>
         <ProgressBar percent={this.state.percent} spinner={false} />
+        {isNoLogin && (
+          <Alert
+            className={styles.warning}
+            message={
+              <div>
+                <span>登陆直通车，显示更多关键词信息。</span>
+                <a href="https://subway.simba.taobao.com" target="_blank" rel="noopener noreferrer">
+                  去登陆
+                </a>
+              </div>
+            }
+            type="warning"
+            showIcon
+            closable
+          />
+        )}
         <Tabs
           hideAdd
           onChange={this.onChange}
@@ -137,6 +164,7 @@ class App extends Component {
                 addPane={this.addPane}
                 setPercent={this.setPercent}
                 percent={this.state.percent}
+                setIsNoLogin={this.setIsNoLogin}
               />
             </TabPane>
           ))}
