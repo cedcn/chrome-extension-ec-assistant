@@ -14,8 +14,8 @@ function popWindow(type, params) {
     type: 'popup',
     left: 100,
     top: 100,
-    width: 800,
-    height: 475,
+    width: 1024,
+    height: 650,
   }
   if (type === 'open') {
     options.url = `window.html?text=${params.selectionText}`

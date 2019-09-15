@@ -1,0 +1,25 @@
+.wrapper {
+  width: 300px;
+  padding: 20px;
+}
+
+.wrapper h4 {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.input {
+  resize: none;
+}
+
+:global(.ant-form .ant-form-item) {
+  margin-bottom: 14px;
+}
+
+.button_wrapper {
+  text-align: center;
+}
+
+.button {
+  width: 100px;
+}

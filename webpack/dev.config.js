@@ -63,9 +63,8 @@ const baseDevConfig = () => ({
                 localIdentName: '[name]__[local]--[hash:base64:5]',
                 getLocalIdent: (context, localIdentName, localName, options) => {
                   if (
-                    context.resourcePath.includes('react-table') ||
-                    context.resourcePath.includes('antd') ||
-                    context.resourcePath.includes('react-virtualized')
+                    context.resourcePath.includes('react-progress-bar-plus') ||
+                    context.resourcePath.includes('antd')
                   ) {
                     return localName
                   }

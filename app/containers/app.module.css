@@ -1,2 +1,7 @@
 .normal {
+  padding: 10px;
+}
+
+:global(.ant-tabs .ant-tabs-bar) {
+  margin-bottom: 3px;
 }
