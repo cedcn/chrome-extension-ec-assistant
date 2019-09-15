@@ -138,7 +138,7 @@ class App extends Component {
     )
     const count = report.length
     return {
-      avgPrice: round(value.avgPrice / count, 2),
+      avgPrice: round(value.avgPrice / count / 100, 2),
       clickIndex: numeral(round(value.clickIndex / count)).format('0,0'),
       competition: round(value.competition / count),
       ctr: round((value.ctr / count) * 100, 2),
