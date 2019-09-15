@@ -94,8 +94,8 @@ export const s2ab = (s) => {
   return buf
 }
 
-export const downloadXlsx = () => {
-  const wb = XLSX.utils.table_to_book(document.body.querySelector('table'), {
+export const downloadXlsx = (fileName, tableSelector) => {
+  const wb = XLSX.utils.table_to_book(document.body.querySelector(tableSelector || 'table'), {
     sheet: 'Sheet JS',
   })
   const wbout = XLSX.write(wb, {
@@ -103,7 +103,7 @@ export const downloadXlsx = () => {
     bookSST: true,
     type: 'binary',
   })
-  const fname = '全部关键词.xlsx'
+  const fname = `${fileName || '关键词'}.xlsx`
   try {
     saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), fname)
   } catch (e) {

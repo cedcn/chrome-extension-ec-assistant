@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Tabs, Alert, Icon, Tooltip } from 'antd'
-import { map } from 'lodash'
+import { map, find } from 'lodash'
 import ProgressBar from 'react-progress-bar-plus'
 import styles from './app.module.css'
 import DataTable from './DataTable'
@@ -112,7 +112,8 @@ class App extends Component {
   }
 
   render() {
-    const { panes, isNoLogin } = this.state
+    const { panes, isNoLogin, activeKey } = this.state
+    const activePane = find(panes, (p) => p.key === activeKey)
     const operations = (
       <>
         <Tooltip placement="bottom" title="所有数据为近7天平均值">
@@ -120,7 +121,7 @@ class App extends Component {
         </Tooltip>
         <Button
           onClick={() => {
-            downloadXlsx()
+            downloadXlsx(activePane.keyword, `.data-table-${activePane.key} table`)
           }}
           className={styles.export_button}
           size="small"
@@ -160,6 +161,7 @@ class App extends Component {
           {map(panes, (pane) => (
             <TabPane tab={pane.keyword} key={pane.key} closable={panes.length > 1}>
               <DataTable
+                className={`data-table-${pane.key}`}
                 keyword={pane.keyword}
                 addPane={this.addPane}
                 setPercent={this.setPercent}

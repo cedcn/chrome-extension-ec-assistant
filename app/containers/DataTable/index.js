@@ -19,7 +19,7 @@ class App extends Component {
       isLoading: false,
     }
 
-    this.q = queue({ results: [], concurrency: 1 })
+    this.q = queue({ results: [], concurrency: 3 })
   }
 
   componentDidMount() {
@@ -166,10 +166,16 @@ class App extends Component {
   }
 
   render() {
-    const { addPane } = this.props
+    const { addPane, className } = this.props
+    const { wordGroup, isLoading } = this.state
+
     const columns = [
       {
-        title: '关键词',
+        title: (
+          <span>
+            关键词<span className={styles.column_keyword}>（{wordGroup.length}）</span>
+          </span>
+        ),
         dataIndex: 'keyword',
         render: (text) => <a onClick={() => addPane(text)}>{text}</a>,
         width: 150,
@@ -230,10 +236,16 @@ class App extends Component {
       },
     ]
 
-    const { wordGroup, isLoading } = this.state
     const dataSource = map(wordGroup, (word, index) => ({ key: index, ...word }))
     return (
-      <Table pagination={false} loading={isLoading} columns={columns} dataSource={dataSource} scroll={{ x: true }} />
+      <Table
+        className={className}
+        pagination={false}
+        loading={isLoading}
+        columns={columns}
+        dataSource={dataSource}
+        scroll={{ x: true }}
+      />
     )
   }
 }
@@ -241,6 +253,7 @@ class App extends Component {
 App.propTypes = {
   keyword: PropTypes.string.isRequired,
   addPane: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired,
   setPercent: PropTypes.func.isRequired,
   setIsNoLogin: PropTypes.func.isRequired,
 }
