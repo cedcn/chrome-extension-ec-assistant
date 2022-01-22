@@ -59,7 +59,7 @@
     "file-saver": "^2.0.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "nanoid": "^2.1.0",
+    "nanoid": "^3.1.31",
     "numeral": "^2.0.6",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.2",
